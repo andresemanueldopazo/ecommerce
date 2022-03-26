@@ -1,28 +1,27 @@
 import { LoginDTORequest, LoginDTOResponse } from './LoginDTO';
 import { LoginErrors } from './LoginErrors';
 import { IUserRepo } from '../../repo/IUserRepo';
-import { User } from '../../domain/User';
 import { UserName } from '../../domain/UserName';
 import { UserPassword } from '../../domain/UserPassword';
 import { JWTToken, RefreshToken } from '../../domain/jwt';
 import { IAuthService } from '../../services/auth/IAuthService';
 import { Interactor } from '../../../../shared/core/Interactor';
-import { DomainError } from '../../../../shared/core/DomainError';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class LoginInteractor
-  implements Interactor<LoginDTORequest, Promise<Error | LoginDTOResponse>> {
+  implements Interactor<LoginDTORequest, Promise<AppError | LoginDTOResponse>> {
   constructor(private userRepo: IUserRepo, private authService: IAuthService) {}
 
   public async execute(
     request: LoginDTORequest,
-  ): Promise<Error | LoginDTOResponse> {
+  ): Promise<AppError | LoginDTOResponse> {
     const userNameOrError = UserName.create({ userName: request.userName });
-    if (userNameOrError instanceof DomainError) return userNameOrError;
+    if (userNameOrError instanceof AppError) return userNameOrError;
 
-    const passwordOrError = UserPassword.create({ value: request.password });
-    if (passwordOrError instanceof DomainError) return passwordOrError;
+    const passwordOrError = UserPassword.create({ value: request.password, hashed: false });
+    if (passwordOrError instanceof AppError) return passwordOrError;
 
-    const user: User = await this.userRepo.getUserByUserName(
+    const user = await this.userRepo.getUserByUserName(
       userNameOrError.value,
     );
     if (!user || user.isDeleted) {

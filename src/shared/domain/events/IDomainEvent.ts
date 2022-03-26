@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '../UniqueEntityID';
 
 export interface IDomainEvent {
-  dateTimeOccurred: Date;
+  dateTimeOccurred: string;
   getAggregateId(): UniqueEntityID;
 }

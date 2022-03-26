@@ -1,13 +1,13 @@
-import { InteractorError } from '../../../../shared/core/InteractorError';
+import { AppError } from '../../../../shared/core/AppError';
 
 export namespace CreateUserErrors {
-  export class EmailAlreadyExistsError extends InteractorError {
+  export class EmailAlreadyExistsError extends AppError {
     constructor(email: string) {
       super(`The email ${email} associated for this account already exists`);
     }
   }
 
-  export class UserNameTakenError extends InteractorError {
+  export class UserNameTakenError extends AppError {
     constructor(userName: string) {
       super(`The userName ${userName} was already taken`);
     }

@@ -3,11 +3,11 @@ import { IDomainEvent } from '../../../../shared/domain/events/IDomainEvent';
 import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
 
 export class ProductDeleted implements IDomainEvent {
-  public dateTimeOccurred: Date;
+  public dateTimeOccurred: string;
   public product: Product;
 
   constructor(product: Product) {
-    this.dateTimeOccurred = new Date();
+    this.dateTimeOccurred = new Date().toString();
     this.product = product;
   }
 

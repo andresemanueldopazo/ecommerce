@@ -1,5 +1,5 @@
 import express from 'express';
-import { middleware } from '../../../../../shared/infra/http';
+import { middleware } from '../../../../../shared/infra/http/utils';
 import { createUserController } from '../../../useCases/createUser';
 import { deleteUserController } from '../../../useCases/deleteUser';
 import { getCurrentUserController } from '../../../useCases/getCurrentUser';

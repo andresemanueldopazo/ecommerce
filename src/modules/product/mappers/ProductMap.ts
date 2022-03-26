@@ -1,4 +1,4 @@
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID';
 import { Product } from '../domain/Product';
 import { ProductName } from '../domain/ProductName';
@@ -15,7 +15,7 @@ export class ProductMap {
     };
   }
 
-  public static toDomain(raw: any): Product {
+  public static toDomain(raw: any): Product | undefined {
     const productNameOrError = ProductName.create({
       productName: raw.product_name,
     });
@@ -35,9 +35,9 @@ export class ProductMap {
       new UniqueEntityID(raw.base_product_id),
     );
 
-    if (productOrError instanceof DomainError) return;
-
-    return productOrError;
+    if (!(productOrError instanceof AppError)) {
+      return productOrError;
+    }
   }
 
   public static async toPersistence(product: Product): Promise<any> {

@@ -3,6 +3,7 @@ import { DeleteUserDTO } from '../../../user/useCases/deleteUser/DeleteUserDTO';
 import { DeleteUserErrors } from '../../../user/useCases/deleteUser/DeleteUserErrors';
 import { DeleteUserInteractor } from '../../../user/useCases/deleteUser/DeleteUserInteractor';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class DeleteUserController extends BaseController {
   private interactor: DeleteUserInteractor;
@@ -16,7 +17,7 @@ export class DeleteUserController extends BaseController {
     const dto: DeleteUserDTO = req.body as DeleteUserDTO;
 
     const result = await this.interactor.execute(dto);
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       if (result instanceof DeleteUserErrors.UserNotFoundError) {
         return this.notFound(res, result.message);
       } else {

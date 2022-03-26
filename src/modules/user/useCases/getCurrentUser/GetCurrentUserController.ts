@@ -3,6 +3,7 @@ import { DecodedExpressRequest } from '../../infra/http/models/DecodedRequest';
 import { GetUserByUserNameInteractor } from '../getUserByUserName/GetUserByUserNameInteractor';
 import { UserMap } from '../../mappers/UserMap';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class GetCurrentUserController extends BaseController {
   constructor(private interactor: GetUserByUserNameInteractor) {
@@ -16,7 +17,7 @@ export class GetCurrentUserController extends BaseController {
     const { userName } = req.decoded;
 
     const userOrError = await this.interactor.execute({ userName });
-    if (userOrError instanceof Error) {
+    if (userOrError instanceof AppError) {
       return this.fail(res, userOrError.message);
     } else {
       return this.ok(res, {

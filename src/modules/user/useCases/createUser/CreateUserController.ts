@@ -5,6 +5,7 @@ import { BaseController } from '../../../../shared/infra/http/models/BaseControl
 import { TextUtils } from '../../../../shared/utils/TextUtils';
 import { DecodedExpressRequest } from '../../infra/http/models/DecodedRequest';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class CreateUserController extends BaseController {
   constructor(private interactor: CreateUserInteractor) {
@@ -16,7 +17,6 @@ export class CreateUserController extends BaseController {
     res: express.Response,
   ): Promise<any> {
     let dto: CreateUserDTO = req.body as CreateUserDTO;
-
     dto = {
       userName: TextUtils.sanitize(dto.userName),
       email: TextUtils.sanitize(dto.email),
@@ -24,7 +24,7 @@ export class CreateUserController extends BaseController {
     };
 
     const result = await this.interactor.execute(dto);
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       if (result instanceof CreateUserErrors.UserNameTakenError) {
         return this.conflict(res, result.message);
       } else if (result instanceof CreateUserErrors.EmailAlreadyExistsError) {

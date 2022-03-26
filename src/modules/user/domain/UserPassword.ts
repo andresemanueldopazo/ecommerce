@@ -1,11 +1,11 @@
 import * as bcrypt from 'bcrypt';
 import { ValueObject } from '../../../shared/domain/ValueObject';
 import { Guard } from '../../../shared/core/Guard';
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 
 interface IUserPasswordProps {
   value: string;
-  hashed?: boolean;
+  hashed: boolean;
 }
 
 export class UserPassword extends ValueObject<IUserPasswordProps> {
@@ -65,15 +65,15 @@ export class UserPassword extends ValueObject<IUserPasswordProps> {
     });
   }
 
-  public static create(props: IUserPasswordProps): DomainError | UserPassword {
+  public static create(props: IUserPasswordProps): AppError | UserPassword {
     const propsResult = Guard.againstNullOrUndefined(props.value, 'password');
 
     if (!propsResult.succeeded) {
-      return new Error(propsResult.message);
+      return new AppError(propsResult.message);
     } else {
       if (!props.hashed) {
         if (!this.isAppropriateLength(props.value)) {
-          return new Error('Password doesnt meet criteria [8 chars min].');
+          return new AppError('Password doesnt meet criteria [8 chars min].');
         }
       }
 

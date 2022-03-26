@@ -3,10 +3,10 @@ import { User } from '../../domain/User';
 
 export interface IAuthService {
   signJWT(props: JWTClaims): JWTToken;
-  decodeJWT(token: JWTToken): Promise<JWTClaims>;
+  decodeJWT(token: JWTToken): Promise<JWTClaims | null>;
   createRefreshToken(): RefreshToken;
   getTokens(userName: string): Promise<JWTToken[]>;
   saveAuthenticatedUser(user: User): Promise<void>;
   deAuthenticateUser(userName: string): Promise<void>;
-  getUserNameFromRefreshToken(refreshToken: RefreshToken): Promise<string>;
+  getUserNameFromRefreshToken(refreshToken: RefreshToken): Promise<string | undefined>;
 }

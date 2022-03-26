@@ -29,15 +29,13 @@ export class DomainEvents {
 
   private static findMarkedAggregateByID(
     id: UniqueEntityID,
-  ): AggregateRoot<any> {
-    let found: AggregateRoot<any> = null;
+  ): AggregateRoot<any> | undefined {
     for (const aggregate of this.markedAggregates) {
       if (aggregate.id.equals(id)) {
-        found = aggregate;
+        return aggregate;
       }
     }
 
-    return found;
   }
 
   public static dispatchEventsForAggregate(id: UniqueEntityID): void {

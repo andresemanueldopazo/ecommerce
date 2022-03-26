@@ -9,7 +9,7 @@ export class Middleware {
   }
 
   public isSeller() {
-    return async (req: DecodedExpressRequest, res, next) => {
+    return async (req: DecodedExpressRequest, res: any, next: any) => {
       const { adminUser } = req.decoded;
       if (!adminUser) {
         return this.endRequest(
@@ -23,7 +23,7 @@ export class Middleware {
   }
 
   public isAuthenticated() {
-    return async (req, res, next) => {
+    return async (req: any, res: any, next: any) => {
       const token = req.headers['authorization'];
       if (token) {
         const decoded = await this.authService.decodeJWT(token);

@@ -5,15 +5,16 @@ import { UserId } from '../../domain/UserId';
 import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
 import { IUserRepo } from '../../repo/IUserRepo';
 import { IAuthService } from '../../services/auth/IAuthService';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class DeleteUserInteractor
-  implements Interactor<DeleteUserDTO, Error | void> {
+  implements Interactor<DeleteUserDTO, AppError | void> {
   constructor(
     private readonly userRepo: IUserRepo,
     private readonly authService: IAuthService,
   ) {}
 
-  async execute(request: DeleteUserDTO): Promise<Error | void> {
+  async execute(request: DeleteUserDTO): Promise<AppError | void> {
     const userId = UserId.create(new UniqueEntityID(request.userId));
 
     const user = await this.userRepo.getUserByUserId(userId.id.toString());

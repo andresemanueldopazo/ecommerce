@@ -1,7 +1,7 @@
-import { DomainError } from '../../../../shared/core/DomainError';
+import { AppError } from '../../../../shared/core/AppError';
 
 export namespace LogoutErrors {
-  export class UserNotFoundOrDeletedError extends DomainError {
+  export class UserNotFoundOrDeletedError extends AppError {
     constructor() {
       super(`User not found or doesn't exist anymore.`);
     }
