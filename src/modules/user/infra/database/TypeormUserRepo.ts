@@ -2,44 +2,36 @@ import { User } from '../../domain/User';
 import { UserMap } from '../../mappers/UserMap';
 import { BaseUser } from './BaseUser';
 import { IUserRepo } from '../../repo/IUserRepo';
+import { dataSource } from '../../../../shared/infra/database/dataSource';
 
 export class TypeormUserRepo implements IUserRepo {
-  private client: any;
-
-  constructor(client: any) {
-    this.client = client;
-  }
-
   async exists(userEmail: string): Promise<boolean> {
-    const user = await this.client
-      .getRepository(BaseUser)
-      .findOne({ email: userEmail });
-
-    return !!user === true;
+    const baseUser = await dataSource.getRepository(BaseUser).findOneBy({ email: userEmail });
+    return !!baseUser=== true;
   }
 
-  async getUserByUserName(userName: string): Promise<User> {
-    const user = await this.client
+  async getUserByUserName(userName: string): Promise<User | undefined> {
+    const baseUser = await dataSource
       .getRepository(BaseUser)
-      .findOne({ userName: userName });
+      .findOneBy({ userName: userName });
 
-    if (!user) return;
-
-    return UserMap.toDomain(user);
+    if (baseUser) {
+      return UserMap.toDomain(baseUser);
+    }
   }
 
-  async getUserByUserId(userId: string): Promise<User> {
-    const user = await this.client
+  async getUserByUserId(userId: string): Promise<User | undefined> {
+    const baseUser = await dataSource
       .getRepository(BaseUser)
-      .findOne({ base_user_id: userId });
+      .findOneBy({ base_user_id: userId });
 
-    if (!user) return;
-
-    return UserMap.toDomain(user);
+    if (baseUser) {
+      return UserMap.toDomain(baseUser);
+    }
   }
 
   async save(user: User): Promise<void> {
     const rawUser = await UserMap.toPersistence(user);
-    await this.client.getRepository(BaseUser).save(rawUser);
+    await dataSource.getRepository(BaseUser).save(rawUser);
   }
 }

@@ -3,11 +3,11 @@ import { IDomainEvent } from '../../../../shared/domain/events/IDomainEvent';
 import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
 
 export class UserCreated implements IDomainEvent {
-  public dateTimeOccurred: Date;
+  public dateTimeOccurred: string;
   public user: User;
 
   constructor(user: User) {
-    this.dateTimeOccurred = new Date();
+    this.dateTimeOccurred = new Date().toString();
     this.user = user;
   }
 

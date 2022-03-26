@@ -1,4 +1,4 @@
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { Guard } from '../../../shared/core/Guard';
 import { ValueObject } from '../../../shared/domain/ValueObject';
 
@@ -18,13 +18,13 @@ export class ProductName extends ValueObject<ProductNameProps> {
     super(props);
   }
 
-  public static create(props: ProductNameProps): DomainError | ProductName {
+  public static create(props: ProductNameProps): AppError | ProductName {
     const productNameResult = Guard.againstNullOrUndefined(
       props.productName,
       'productName',
     );
     if (!productNameResult.succeeded) {
-      return new DomainError(productNameResult.message);
+      return new AppError(productNameResult.message);
     }
 
     const minLengthResult = Guard.againstAtLeast(
@@ -32,7 +32,7 @@ export class ProductName extends ValueObject<ProductNameProps> {
       props.productName,
     );
     if (!minLengthResult.succeeded) {
-      return new DomainError(minLengthResult.message);
+      return new AppError(minLengthResult.message);
     }
 
     const maxLengthResult = Guard.againstAtMost(
@@ -40,7 +40,7 @@ export class ProductName extends ValueObject<ProductNameProps> {
       props.productName,
     );
     if (!maxLengthResult.succeeded) {
-      return new DomainError(minLengthResult.message);
+      return new AppError(minLengthResult.message);
     }
 
     return new ProductName(props);

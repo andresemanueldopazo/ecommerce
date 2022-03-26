@@ -4,6 +4,7 @@ import * as express from 'express';
 import { DecodedExpressRequest } from '../../infra/http/models/DecodedRequest';
 import { LoginInteractor } from './LoginInteractor';
 import { LoginDTORequest, LoginDTOResponse } from './LoginDTO';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class LoginController extends BaseController {
   constructor(private readonly interactor: LoginInteractor) {
@@ -17,7 +18,7 @@ export class LoginController extends BaseController {
     const dto: LoginDTORequest = req.body as LoginDTORequest;
 
     const result = await this.interactor.execute(dto);
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       if (result instanceof LoginErrors.UserNameDoesntExistError) {
         return this.notFound(res, result.message);
       } else if (result instanceof LoginErrors.PasswordDoesntMatchError) {

@@ -1,9 +1,9 @@
-import { redisConnection } from './implementation/redis/redisConnection';
 import { KeyValueStoreAuthService } from './implementation/KeyValueStoreAuthService';
+import { client } from './implementation/redis/redisConnection';
 import { RedisKeyValueStore } from './implementation/redis/RedisKeyValueStore';
 
 const authService = new KeyValueStoreAuthService(
-  new RedisKeyValueStore(redisConnection),
+  new RedisKeyValueStore(client),
 );
 
 export { authService };

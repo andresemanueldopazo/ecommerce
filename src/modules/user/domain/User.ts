@@ -8,19 +8,19 @@ import { UserDeleted } from './events/UserDeleted';
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID';
 import { Guard } from '../../../shared/core/Guard';
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot';
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { UserLoggedIn } from './events/userLoggedIn';
 
 interface UserProps {
   email: UserEmail;
   userName: UserName;
   password: UserPassword;
-  isEmailVerified?: boolean;
-  isSeller?: boolean;
+  isEmailVerified: boolean;
+  isSeller: boolean;
   accessToken?: JWTToken;
   refreshToken?: RefreshToken;
-  isDeleted?: boolean;
-  lastLogin?: Date;
+  lastLogin: string;
+  isDeleted: boolean;
 }
 
 export class User extends AggregateRoot<UserProps> {
@@ -40,7 +40,7 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.password;
   }
 
-  get accessToken(): string {
+  get accessToken(): string | undefined {
     return this.props.accessToken;
   }
 
@@ -56,11 +56,11 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.isSeller;
   }
 
-  get lastLogin(): Date {
+  get lastLogin(): string | undefined {
     return this.props.lastLogin;
   }
 
-  get refreshToken(): RefreshToken {
+  get refreshToken(): RefreshToken | undefined {
     return this.props.refreshToken;
   }
 
@@ -72,7 +72,7 @@ export class User extends AggregateRoot<UserProps> {
     this.addDomainEvent(new UserLoggedIn(this));
     this.props.accessToken = token;
     this.props.refreshToken = refreshToken;
-    this.props.lastLogin = new Date();
+    this.props.lastLogin = new Date().toString().toString();
   }
 
   public delete(): void {
@@ -89,14 +89,14 @@ export class User extends AggregateRoot<UserProps> {
   public static create(
     props: UserProps,
     id?: UniqueEntityID,
-  ): DomainError | User {
+  ): AppError | User {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.userName, argumentName: 'userName' },
       { argument: props.email, argumentName: 'email' },
     ]);
 
     if (!guardResult.succeeded) {
-      return new DomainError(guardResult.message);
+      return new AppError(guardResult.message);
     }
 
     const isNewUser = !!id === false;
@@ -106,6 +106,7 @@ export class User extends AggregateRoot<UserProps> {
         isDeleted: props.isDeleted ? props.isDeleted : false,
         isEmailVerified: props.isEmailVerified ? props.isEmailVerified : false,
         isSeller: props.isSeller ? props.isSeller : false,
+        lastLogin: props.lastLogin ? props.lastLogin : '',
       },
       id,
     );

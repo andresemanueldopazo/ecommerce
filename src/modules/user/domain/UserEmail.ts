@@ -1,4 +1,4 @@
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { ValueObject } from '../../../shared/domain/ValueObject';
 
 interface UserEmailProps {
@@ -23,9 +23,9 @@ export class UserEmail extends ValueObject<UserEmailProps> {
     return email.trim().toLowerCase();
   }
 
-  public static create(email: string): DomainError | UserEmail {
+  public static create(email: string): AppError | UserEmail {
     if (!this.isValidEmail(email)) {
-      return new DomainError('Email address not valid');
+      return new AppError('Email address not valid');
     } else {
       return new UserEmail({ value: this.format(email) });
     }

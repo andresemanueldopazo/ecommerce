@@ -5,10 +5,11 @@ import { IUserRepo } from '../../repo/IUserRepo';
 import { UserName } from '../../domain/UserName';
 import { RefreshAccessTokenDTO } from './RefreshAccessTokenDTO';
 import { IAuthService } from '../../services/auth/IAuthService';
-import { DomainError } from '../../../../shared/core/DomainError';
+import { AppError } from '../../../../shared/core/AppError';
+import { User } from '../../domain/User';
 
 export class RefreshAccessToken
-  implements Interactor<RefreshAccessTokenDTO, Promise<Error | JWTToken>> {
+  implements Interactor<RefreshAccessTokenDTO, Promise<AppError | JWTToken>> {
   constructor(
     private readonly userRepo: IUserRepo,
     private readonly authService: IAuthService,
@@ -16,7 +17,7 @@ export class RefreshAccessToken
 
   public async execute(
     request: RefreshAccessTokenDTO,
-  ): Promise<Error | JWTToken> {
+  ): Promise<AppError | JWTToken> {
     const { refreshToken } = request;
 
     const stringUsername = await this.authService.getUserNameFromRefreshToken(
@@ -27,7 +28,7 @@ export class RefreshAccessToken
     }
 
     const userNameOrError = UserName.create({ userName: stringUsername });
-    if (userNameOrError instanceof DomainError) return userNameOrError;
+    if (userNameOrError instanceof AppError) return userNameOrError;
 
     const user = await this.userRepo.getUserByUserName(userNameOrError.value);
     if (!user) {
@@ -37,9 +38,9 @@ export class RefreshAccessToken
     const accessToken: JWTToken = this.authService.signJWT({
       userName: user.userName.value,
       email: user.email.value,
-      isEmailVerified: user.isEmailVerified,
       userId: user.userId.id.toString(),
-      adminUser: user.isSeller,
+      isEmailVerified: user.isEmailVerified,
+      adminUser: false,
     });
 
     user.setAccessToken(accessToken, refreshToken);

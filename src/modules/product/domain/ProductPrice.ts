@@ -1,4 +1,4 @@
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { Guard } from '../../../shared/core/Guard';
 import { ValueObject } from '../../../shared/domain/ValueObject';
 
@@ -17,10 +17,10 @@ export class ProductPrice extends ValueObject<ProductPriceProps> {
     super(props);
   }
 
-  public static create(props: ProductPriceProps): DomainError | ProductPrice {
+  public static create(props: ProductPriceProps): AppError | ProductPrice {
     const minResult = Guard.equalOrGreaterThan(this.min, props.productPrice);
     if (!minResult.succeeded) {
-      return new DomainError(minResult.message);
+      return new AppError(minResult.message);
     }
 
     const productPriceResult = Guard.againstNullOrUndefined(
@@ -28,7 +28,7 @@ export class ProductPrice extends ValueObject<ProductPriceProps> {
       'productPrice',
     );
     if (!productPriceResult.succeeded) {
-      return new DomainError(productPriceResult.message);
+      return new AppError(productPriceResult.message);
     }
 
     return new ProductPrice(props);

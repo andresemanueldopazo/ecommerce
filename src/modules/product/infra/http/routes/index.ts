@@ -1,5 +1,5 @@
 import express from 'express';
-import { middleware } from '../../../../../shared/infra/http';
+import { middleware } from '../../../../../shared/infra/http/utils';
 import { createProductController } from '../../../useCases/createProduct';
 
 const productRouter = express.Router();

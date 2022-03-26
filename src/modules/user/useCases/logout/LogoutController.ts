@@ -2,6 +2,7 @@ import { BaseController } from '../../../../shared/infra/http/models/BaseControl
 import { DecodedExpressRequest } from '../../infra/http/models/DecodedRequest';
 import { LogoutInteractor } from './LogoutInteractor';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class LogoutController extends BaseController {
   constructor(private interactor: LogoutInteractor) {
@@ -15,7 +16,7 @@ export class LogoutController extends BaseController {
     const { userId } = req.decoded;
 
     const result = await this.interactor.execute({ userId });
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       return this.fail(res, result.message);
     } else {
       return this.ok(res);

@@ -4,6 +4,7 @@ import { CreateProductErrors } from './CreateProductErrors';
 import { BaseController } from '../../../../shared/infra/http/models/BaseController';
 import { TextUtils } from '../../../../shared/utils/TextUtils';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class CreateProductController extends BaseController {
   constructor(private interactor: CreateProductInteractor) {
@@ -15,7 +16,7 @@ export class CreateProductController extends BaseController {
     dto = { ...dto, productName: TextUtils.sanitize(dto.productName) };
 
     const result = await this.interactor.execute(dto);
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       if (result instanceof CreateProductErrors.ProductAlreadyExistsError) {
         return this.conflict(res, result.message);
       } else {

@@ -1,4 +1,4 @@
-import { DomainError } from '../../../shared/core/DomainError';
+import { AppError } from '../../../shared/core/AppError';
 import { Guard } from '../../../shared/core/Guard';
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot';
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID';
@@ -38,12 +38,12 @@ export class Product extends AggregateRoot<ProductProps> {
     this.addDomainEvent(new ProductDeleted(this));
   }
 
-  public changeQuantity(quantity: ProductQuantity): DomainError | void {
+  public changeQuantity(quantity: ProductQuantity): AppError | void {
     this.props.productQuantity = quantity;
     this.addDomainEvent(new ProductQuantityChanged(this));
   }
 
-  public changePrice(price: ProductPrice): DomainError | void {
+  public changePrice(price: ProductPrice): AppError | void {
     this.props.productPrice = price;
     this.addDomainEvent(new ProductPriceChanged(this));
   }
@@ -55,7 +55,7 @@ export class Product extends AggregateRoot<ProductProps> {
   public static create(
     props: ProductProps,
     id?: UniqueEntityID,
-  ): DomainError | Product {
+  ): AppError | Product {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.productName, argumentName: 'productName' },
       { argument: props.productQuantity, argumentName: 'productQuantity' },
@@ -63,7 +63,7 @@ export class Product extends AggregateRoot<ProductProps> {
     ]);
 
     if (!guardResult.succeeded) {
-      return new DomainError(guardResult.message);
+      return new AppError(guardResult.message);
     }
 
     const isNewProduct = !!id === false;

@@ -5,6 +5,7 @@ import { RefreshAccessTokenErrors } from './RefreshAccessTokenErrors';
 import { JWTToken } from '../../domain/jwt';
 import { LoginDTOResponse } from '../login/LoginDTO';
 import * as express from 'express';
+import { AppError } from '../../../../shared/core/AppError';
 
 export class RefreshAccessTokenController extends BaseController {
   constructor(private readonly interactor: RefreshAccessToken) {
@@ -15,7 +16,7 @@ export class RefreshAccessTokenController extends BaseController {
     const dto: RefreshAccessTokenDTO = req.body as RefreshAccessTokenDTO;
 
     const result = await this.interactor.execute(dto);
-    if (result instanceof Error) {
+    if (result instanceof AppError) {
       if (result instanceof RefreshAccessTokenErrors.RefreshTokenNotFound) {
         return this.notFound(res, result.message);
       } else if (
