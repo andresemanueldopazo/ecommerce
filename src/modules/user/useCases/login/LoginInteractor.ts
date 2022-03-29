@@ -18,12 +18,13 @@ export class LoginInteractor
     const userNameOrError = UserName.create({ userName: request.userName });
     if (userNameOrError instanceof AppError) return userNameOrError;
 
-    const passwordOrError = UserPassword.create({ value: request.password, hashed: false });
+    const passwordOrError = UserPassword.create({
+      value: request.password,
+      hashed: false,
+    });
     if (passwordOrError instanceof AppError) return passwordOrError;
 
-    const user = await this.userRepo.getUserByUserName(
-      userNameOrError.value,
-    );
+    const user = await this.userRepo.getUserByUserName(userNameOrError.value);
     if (!user || user.isDeleted) {
       return new LoginErrors.UserNameDoesntExistError();
     }

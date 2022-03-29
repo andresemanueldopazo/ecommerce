@@ -1,78 +1,48 @@
-import { IKeyValueStore } from '../IKeyValueStore';
+import { client } from './clientRedis';
+import { IKeyValueStore } from './IKeyValueStore';
 
 export class RedisKeyValueStore implements IKeyValueStore {
-  constructor(private readonly redisClient) {}
-
   public async count(key: string): Promise<number> {
-    return this.getAllKeys(key)
-      .then(allKeys => {
-        return allKeys.length;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        return error;
-      });
+    const keys = await this.getKeysWithKeySubString(key);
+    return keys.length;
   }
 
-  public exists(key: string): Promise<boolean> {
-    return this.count(key)
-      .then(count => {
-        return count >= 1 ? true : false;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        return error;
-      });
+  public async exists(key: string): Promise<boolean> {
+    const count = await this.count(key);
+    return count >= 1 ? true : false;
   }
 
-  public getOne<T>(key: string): Promise<T> {
-    return this.redisClient.get(key).catch((error: any) => {
-      console.log(error);
-      return error;
-    });
+  public getOne(key: string): Promise<string | null> {
+    return client.get(key);
   }
 
-  public getAllKeys(wildcard: string): Promise<string[]> {
-    return this.redisClient.keys(wildcard).catch((error: any) => {
-      console.log(error);
-      return error;
-    });
+  public getKeysWithKeySubString(subString: string): Promise<string[]> {
+    return client.keys(`*${subString}*`);
   }
 
-  public getAllKeyValue(wildcard: string): Promise<any[]> {
-    return this.redisClient
-      .keys(wildcard)
-      .then(results => {
-        return Promise.all(
-          results.map(async key => {
-            const value = await this.getOne(key);
-            return { key, value };
-          }),
-        );
-      })
-      .catch((error: any) => {
-        console.log(error);
-        return error;
-      });
+  public async getKeysValuesWithKeySubString(
+    subString: string,
+  ): Promise<
+    {
+      key: string;
+      value: string;
+    }[]
+  > {
+    const results = await client.keys(`*${subString}*`);
+    return await Promise.all(
+      results.map(async key => {
+        const value = await this.getOne(key) as string;
+        return { key, value };
+      }),
+    );
   }
 
-  public set(key: string, value: any, expiration: number): Promise<any> {
-    return this.redisClient
-      .set(key, value)
-      .then((reply: any) => {
-        this.redisClient.expire(key, expiration);
-        return reply;
-      })
-      .catch((error: any) => {
-        console.log(error);
-        return error;
-      });
+  public async set(key: string, value: any, expiration: number): Promise<void> {
+    await client.set(key, value);
+    client.expire(key, expiration);
   }
 
-  public deleteOne(key: string): Promise<number> {
-    return this.redisClient.del(key).catch((error: any) => {
-      console.log(error);
-      return error;
-    });
+  public async deleteOne(key: string): Promise<void> {
+    await client.del(key);
   }
 }

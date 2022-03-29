@@ -10,7 +10,7 @@ import { refreshAccessTokenController } from '../../../useCases/refreshAccessTok
 
 const userRouter = express.Router();
 
-userRouter.post('/user', (req, res) => createUserController.execute(req, res));
+userRouter.post('/', (req, res) => createUserController.execute(req, res));
 
 userRouter.get('/me', middleware.isAuthenticated(), (req, res) =>
   getCurrentUserController.execute(req, res),
@@ -26,12 +26,12 @@ userRouter.post('/token/refresh', (req, res) =>
   refreshAccessTokenController.execute(req, res),
 );
 
-userRouter.delete('/user', middleware.isAuthenticated(), (req, res) =>
+userRouter.delete('/', middleware.isAuthenticated(), (req, res) =>
   deleteUserController.execute(req, res),
 );
 
 userRouter.get(
-  '/user',
+  '/',
   middleware.isAuthenticated(),
   middleware.isSeller(),
   (req, res) => getUserByUserNameController.execute(req, res),

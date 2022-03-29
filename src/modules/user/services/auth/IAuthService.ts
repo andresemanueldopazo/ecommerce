@@ -8,5 +8,7 @@ export interface IAuthService {
   getTokens(userName: string): Promise<JWTToken[]>;
   saveAuthenticatedUser(user: User): Promise<void>;
   deAuthenticateUser(userName: string): Promise<void>;
-  getUserNameFromRefreshToken(refreshToken: RefreshToken): Promise<string | undefined>;
+  getUserNameFromRefreshToken(
+    refreshToken: RefreshToken,
+  ): Promise<string | undefined>;
 }

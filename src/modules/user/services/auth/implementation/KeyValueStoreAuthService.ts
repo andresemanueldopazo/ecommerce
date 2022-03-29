@@ -4,7 +4,7 @@ import randtoken from 'rand-token';
 import { RefreshToken, JWTClaims, JWTToken } from '../../../domain/jwt';
 import { User } from '../../../domain/User';
 import { IAuthService } from '../IAuthService';
-import { IKeyValueStore } from './IKeyValueStore';
+import { IKeyValueStore } from './redis/IKeyValueStore';
 
 export class KeyValueStoreAuthService implements IAuthService {
   private readonly tokenExpiryTime: number = 9999999999;
@@ -16,7 +16,7 @@ export class KeyValueStoreAuthService implements IAuthService {
   public async getUserNameFromRefreshToken(
     refreshToken: RefreshToken,
   ): Promise<string | undefined> {
-    const keys = await this.keyValueStore.getAllKeys(`*${refreshToken}*`);
+    const keys = await this.keyValueStore.getKeysWithKeySubString(refreshToken);
 
     const exists = keys.length !== 0;
     if (!exists) {
@@ -34,10 +34,10 @@ export class KeyValueStoreAuthService implements IAuthService {
     if (user.isLoggedIn()) {
       await this.addToken(
         user.userName.value,
-        user.accessToken!,
         user.refreshToken!,
+        user.accessToken!,
       );
-    } 
+    }
   }
 
   public async deAuthenticateUser(userName: string): Promise<void> {
@@ -88,18 +88,18 @@ export class KeyValueStoreAuthService implements IAuthService {
   }
 
   public async getTokens(userName: string): Promise<JWTToken[]> {
-    const keyValues = await this.keyValueStore.getAllKeyValue(
-      `*${this.jwtHashName}.${userName}`,
+    const keyValues = await this.keyValueStore.getKeysValuesWithKeySubString(
+      `${this.jwtHashName}.${userName}`,
     );
     return keyValues.map(kv => kv.value);
   }
 
-  public async clearAllSessions(userName: string): Promise<any> {
-    this.keyValueStore
-      .getAllKeyValue(`*${this.jwtHashName}.${userName}`)
-      .then(keyValues => {
+  public async clearAllSessions(userName: string) {
+    await this.keyValueStore
+      .getKeysValuesWithKeySubString(`${this.jwtHashName}.${userName}`)
+      .then(async keyValues => {
         const keys = keyValues.map(kv => kv.key);
-        return Promise.all(keys.map(key => this.keyValueStore.deleteOne(key)));
+        await Promise.all(keys.map(async key => this.keyValueStore.deleteOne(key)));
       });
   }
 }

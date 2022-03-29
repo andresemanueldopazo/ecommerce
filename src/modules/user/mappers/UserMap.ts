@@ -17,21 +17,22 @@ export class UserMap {
   }
 
   public static toDomain(raw: any): User | undefined {
-    const userNameOrError = UserName.create({ userName: raw.userName });
+    const userNameOrError = UserName.create({ userName: raw.user_name });
     const userPasswordOrError = UserPassword.create({
       value: raw.user_password,
       hashed: true,
     });
     const userEmailOrError = UserEmail.create(raw.email);
 
-    const userOrError = User.create({
+    const userOrError = User.create(
+      {
         userName: userNameOrError as UserName,
         isSeller: raw.is_seller,
         isDeleted: raw.is_deleted,
         isEmailVerified: raw.is_email_verified,
         password: userPasswordOrError as UserPassword,
         email: userEmailOrError as UserEmail,
-        lastLogin: ''
+        lastLogin: raw.last_login,
       },
       new UniqueEntityID(raw.base_user_id),
     );
@@ -55,7 +56,7 @@ export class UserMap {
       base_user_id: user.userId.id.toString(),
       email: user.email.value,
       is_email_verified: user.isEmailVerified,
-      userName: user.userName.value,
+      user_name: user.userName.value,
       user_password: password,
       is_seller: user.isSeller,
       is_deleted: user.isDeleted,

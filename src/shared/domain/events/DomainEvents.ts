@@ -35,7 +35,6 @@ export class DomainEvents {
         return aggregate;
       }
     }
-
   }
 
   public static dispatchEventsForAggregate(id: UniqueEntityID): void {

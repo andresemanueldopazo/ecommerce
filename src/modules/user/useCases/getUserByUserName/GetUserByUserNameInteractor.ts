@@ -10,7 +10,9 @@ export class GetUserByUserNameInteractor
   implements Interactor<GetUserByUserNameDTO, Promise<AppError | User>> {
   constructor(private userRepo: IUserRepo) {}
 
-  public async execute(request: GetUserByUserNameDTO): Promise<AppError | User> {
+  public async execute(
+    request: GetUserByUserNameDTO,
+  ): Promise<AppError | User> {
     const userNameOrError = UserName.create({ userName: request.userName });
     if (userNameOrError instanceof AppError) return userNameOrError;
 

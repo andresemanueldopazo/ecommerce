@@ -7,7 +7,8 @@ import { IProductRepo } from '../../repo/IProductRepo';
 import { Interactor } from '../../../../shared/core/Interactor';
 
 export class GetProductByProductNameInteractor
-  implements Interactor<GetProductByProductNameDTO, Promise<AppError | Product>> {
+  implements
+    Interactor<GetProductByProductNameDTO, Promise<AppError | Product>> {
   constructor(private productRepo: IProductRepo) {}
 
   public async execute(

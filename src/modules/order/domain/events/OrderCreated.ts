@@ -1,6 +1,6 @@
-import { IDomainEvent } from "../../../../shared/domain/events/IDomainEvent";
-import { UniqueEntityID } from "../../../../shared/domain/UniqueEntityID";
-import { Order } from "../Order";
+import { IDomainEvent } from '../../../../shared/domain/events/IDomainEvent';
+import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
+import { Order } from '../Order';
 
 export class OrderCreated implements IDomainEvent {
   public dateTimeOccurred: string;

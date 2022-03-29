@@ -19,20 +19,22 @@ export class CreateUserInteractor
     const userNameOrError = UserName.create({ userName: request.userName });
     if (userNameOrError instanceof AppError) return userNameOrError;
 
-    const passwordOrError = UserPassword.create({ value: request.password, hashed: false });
+    const passwordOrError = UserPassword.create({
+      value: request.password,
+      hashed: false,
+    });
     if (passwordOrError instanceof AppError) return passwordOrError;
 
     const userAlreadyExists = await this.userRepo.exists(
       userEmailOrError.value,
     );
-    console.log("--------------------------------")
-    console.log(userEmailOrError.value);
-    console.log("--------------------------------")
+
     if (userAlreadyExists) {
       return new CreateUserErrors.EmailAlreadyExistsError(
         userEmailOrError.value,
       );
     }
+
     const userNameTaken = await this.userRepo.getUserByUserName(
       userNameOrError.value,
     );
@@ -47,7 +49,7 @@ export class CreateUserInteractor
       isEmailVerified: false,
       isSeller: false,
       isDeleted: false,
-      lastLogin: ''
+      lastLogin: undefined,
     });
     if (userOrError instanceof AppError) return userOrError;
 

@@ -6,7 +6,7 @@ export class BaseUser {
   base_user_id!: string;
 
   @Column()
-  userName!: string;
+  user_name!: string;
 
   @Column()
   email!: string;
@@ -23,6 +23,6 @@ export class BaseUser {
   @Column({ default: false })
   is_deleted!: boolean;
 
-  @Column()
-  last_login!: string;
+  @Column({ nullable: true })
+  last_login?: Date;
 }

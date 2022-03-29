@@ -1,4 +1,4 @@
-import { dataSource } from '../../../../shared/infra/database/dataSource';
+import { dataSource } from '../../../../shared/infra/database/dataSourceTypeorm';
 import { Product } from '../../domain/Product';
 import { ProductMap } from '../../mappers/ProductMap';
 import { IProductRepo } from '../../repo/IProductRepo';
@@ -13,7 +13,9 @@ export class TypeormProductRepo implements IProductRepo {
     return !!product === true;
   }
 
-  async getProductByProductName(productName: string): Promise<Product | undefined> {
+  async getProductByProductName(
+    productName: string,
+  ): Promise<Product | undefined> {
     const product = await dataSource
       .getRepository(BaseProduct)
       .findOneBy({ product_name: productName });

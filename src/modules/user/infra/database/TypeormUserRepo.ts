@@ -2,18 +2,20 @@ import { User } from '../../domain/User';
 import { UserMap } from '../../mappers/UserMap';
 import { BaseUser } from './BaseUser';
 import { IUserRepo } from '../../repo/IUserRepo';
-import { dataSource } from '../../../../shared/infra/database/dataSource';
+import { dataSource } from '../../../../shared/infra/database/dataSourceTypeorm';
 
 export class TypeormUserRepo implements IUserRepo {
   async exists(userEmail: string): Promise<boolean> {
-    const baseUser = await dataSource.getRepository(BaseUser).findOneBy({ email: userEmail });
-    return !!baseUser=== true;
+    const baseUser = await dataSource
+      .getRepository(BaseUser)
+      .findOneBy({ email: userEmail });
+    return !!baseUser === true;
   }
 
   async getUserByUserName(userName: string): Promise<User | undefined> {
     const baseUser = await dataSource
       .getRepository(BaseUser)
-      .findOneBy({ userName: userName });
+      .findOneBy({ user_name: userName });
 
     if (baseUser) {
       return UserMap.toDomain(baseUser);

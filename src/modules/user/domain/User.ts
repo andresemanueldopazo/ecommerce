@@ -19,7 +19,7 @@ interface UserProps {
   isSeller: boolean;
   accessToken?: JWTToken;
   refreshToken?: RefreshToken;
-  lastLogin: string;
+  lastLogin: Date | undefined;
   isDeleted: boolean;
 }
 
@@ -56,7 +56,7 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.isSeller;
   }
 
-  get lastLogin(): string | undefined {
+  get lastLogin(): Date | undefined {
     return this.props.lastLogin;
   }
 
@@ -72,7 +72,7 @@ export class User extends AggregateRoot<UserProps> {
     this.addDomainEvent(new UserLoggedIn(this));
     this.props.accessToken = token;
     this.props.refreshToken = refreshToken;
-    this.props.lastLogin = new Date().toString().toString();
+    this.props.lastLogin = new Date();
   }
 
   public delete(): void {
@@ -86,10 +86,7 @@ export class User extends AggregateRoot<UserProps> {
     super(props, id);
   }
 
-  public static create(
-    props: UserProps,
-    id?: UniqueEntityID,
-  ): AppError | User {
+  public static create(props: UserProps, id?: UniqueEntityID): AppError | User {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.userName, argumentName: 'userName' },
       { argument: props.email, argumentName: 'email' },
@@ -106,7 +103,6 @@ export class User extends AggregateRoot<UserProps> {
         isDeleted: props.isDeleted ? props.isDeleted : false,
         isEmailVerified: props.isEmailVerified ? props.isEmailVerified : false,
         isSeller: props.isSeller ? props.isSeller : false,
-        lastLogin: props.lastLogin ? props.lastLogin : '',
       },
       id,
     );

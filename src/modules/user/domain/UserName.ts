@@ -27,18 +27,18 @@ export class UserName extends ValueObject<UserNameProps> {
       return new AppError(userNameResult.message);
     }
 
-    // const minLengthResult = Guard.againstAtLeast(
-    //   this.minLength,
-    //   props.userName,
-    // );
-    // if (!minLengthResult.succeeded) {
-    //   return new AppError(minLengthResult.message);
-    // }
+    const minLengthResult = Guard.againstAtLeast(
+      this.minLength,
+      props.userName,
+    );
+    if (!minLengthResult.succeeded) {
+      return new AppError(minLengthResult.message);
+    }
 
-    // const maxLengthResult = Guard.againstAtMost(this.maxLength, props.userName);
-    // if (!maxLengthResult.succeeded) {
-    //   return new AppError(minLengthResult.message);
-    // }
+    const maxLengthResult = Guard.againstAtMost(this.maxLength, props.userName);
+    if (!maxLengthResult.succeeded) {
+      return new AppError(minLengthResult.message);
+    }
 
     return new UserName(props);
   }
