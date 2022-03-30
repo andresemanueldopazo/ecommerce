@@ -20,9 +20,7 @@ export class GetCurrentUserController extends BaseController {
     if (userOrError instanceof AppError) {
       return this.fail(res, userOrError.message);
     } else {
-      return this.ok(res, {
-        user: UserMap.toDTO(userOrError),
-      });
+      return this.ok(res, userOrError);
     }
   }
 }

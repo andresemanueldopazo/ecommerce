@@ -6,6 +6,7 @@ import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
 import { IUserRepo } from '../../repo/IUserRepo';
 import { IAuthService } from '../../services/auth/IAuthService';
 import { AppError } from '../../../../shared/core/AppError';
+import { UserName } from '../../domain/UserName';
 
 export class DeleteUserInteractor
   implements Interactor<DeleteUserDTO, AppError | void> {
@@ -15,9 +16,10 @@ export class DeleteUserInteractor
   ) {}
 
   async execute(request: DeleteUserDTO): Promise<AppError | void> {
-    const userId = UserId.create(new UniqueEntityID(request.userId));
+    const userNameOrError = UserName.create({ userName: request.userName });
+    if (userNameOrError instanceof AppError) return userNameOrError;
 
-    const user = await this.userRepo.getUserByUserId(userId.id.toString());
+    const user = await this.userRepo.getUserByUserName(userNameOrError.value);
     if (!user) {
       return new DeleteUserErrors.UserNotFoundError();
     }
