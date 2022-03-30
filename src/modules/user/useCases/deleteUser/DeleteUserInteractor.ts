@@ -1,8 +1,6 @@
 import { DeleteUserDTO } from './DeleteUserDTO';
 import { DeleteUserErrors } from './DeleteUserErrors';
 import { Interactor } from '../../../../shared/core/Interactor';
-import { UserId } from '../../domain/UserId';
-import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID';
 import { IUserRepo } from '../../repo/IUserRepo';
 import { IAuthService } from '../../services/auth/IAuthService';
 import { AppError } from '../../../../shared/core/AppError';

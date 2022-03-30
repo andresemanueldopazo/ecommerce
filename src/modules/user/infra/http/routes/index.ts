@@ -26,8 +26,10 @@ userRouter.post('/token/refresh', (req, res) =>
   refreshAccessTokenController.execute(req, res),
 );
 
-userRouter.delete('/', middleware.isAuthenticated(), (req, res) =>
-  deleteUserController.execute(req, res),
+userRouter.delete('/',
+  middleware.isAuthenticated(),
+  middleware.isSeller(),
+  (req, res) => deleteUserController.execute(req, res),
 );
 
 userRouter.get(

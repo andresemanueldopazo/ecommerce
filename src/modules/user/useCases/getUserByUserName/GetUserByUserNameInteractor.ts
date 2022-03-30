@@ -1,7 +1,6 @@
 import { GetUserByUserNameDTO } from './GetUserByUserNameDTO';
 import { GetUserByUserNameErrors } from './GetUserByUserNameErrors';
 import { UserName } from '../../domain/UserName';
-import { User } from '../../domain/User';
 import { AppError } from '../../../../shared/core/AppError';
 import { IUserRepo } from '../../repo/IUserRepo';
 import { Interactor } from '../../../../shared/core/Interactor';

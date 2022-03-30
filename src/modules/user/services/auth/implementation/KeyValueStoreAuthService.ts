@@ -7,7 +7,7 @@ import { IAuthService } from '../IAuthService';
 import { IKeyValueStore } from './redis/IKeyValueStore';
 
 export class KeyValueStoreAuthService implements IAuthService {
-  private readonly tokenExpiryTime: number = 9999999999;
+  private readonly tokenExpiryTime: number = 300;
   private readonly jwtHashName: string = 'activeJwtClients';
   private readonly secret: string = process.env.APP_SECRET!;
 
@@ -53,7 +53,7 @@ export class KeyValueStoreAuthService implements IAuthService {
       email: props.email,
       userName: props.userName,
       userId: props.userId,
-      adminUser: props.adminUser,
+      isSeller: props.isSeller,
       isEmailVerified: props.isEmailVerified,
     };
 
