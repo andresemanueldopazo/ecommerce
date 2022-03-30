@@ -41,7 +41,7 @@ export class LoginInteractor
       email: user.email.value,
       isEmailVerified: user.isEmailVerified,
       userId: user.userId.id.toString(),
-      adminUser: user.isSeller,
+      isSeller: user.isSeller,
     });
 
     const refreshToken: RefreshToken = this.authService.createRefreshToken();

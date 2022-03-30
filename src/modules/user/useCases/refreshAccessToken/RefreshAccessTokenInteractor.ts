@@ -6,7 +6,6 @@ import { UserName } from '../../domain/UserName';
 import { RefreshAccessTokenDTO } from './RefreshAccessTokenDTO';
 import { IAuthService } from '../../services/auth/IAuthService';
 import { AppError } from '../../../../shared/core/AppError';
-import { User } from '../../domain/User';
 
 export class RefreshAccessToken
   implements Interactor<RefreshAccessTokenDTO, Promise<AppError | JWTToken>> {
@@ -40,7 +39,7 @@ export class RefreshAccessToken
       email: user.email.value,
       userId: user.userId.id.toString(),
       isEmailVerified: user.isEmailVerified,
-      adminUser: false,
+      isSeller: user.isSeller,
     });
 
     user.setAccessToken(accessToken, refreshToken);

@@ -15,7 +15,7 @@ export class CreateUserInteractor
   async execute(request: CreateUserDTO): Promise<AppError | void> {
     const userEmailOrError = UserEmail.create(request.email);
     if (userEmailOrError instanceof AppError) return userEmailOrError;
-
+    
     const userNameOrError = UserName.create({ userName: request.userName });
     if (userNameOrError instanceof AppError) return userNameOrError;
 
@@ -24,7 +24,7 @@ export class CreateUserInteractor
       hashed: false,
     });
     if (passwordOrError instanceof AppError) return passwordOrError;
-
+    
     const userAlreadyExists = await this.userRepo.exists(
       userEmailOrError.value,
     );
@@ -52,7 +52,6 @@ export class CreateUserInteractor
       lastLogin: undefined,
     });
     if (userOrError instanceof AppError) return userOrError;
-
     await this.userRepo.save(userOrError);
   }
 }

@@ -3,7 +3,7 @@ export interface JWTClaims {
   isEmailVerified: boolean;
   email: string;
   userName: string;
-  adminUser: boolean;
+  isSeller: boolean;
 }
 
 export type JWTToken = string;

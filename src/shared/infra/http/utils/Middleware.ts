@@ -10,11 +10,11 @@ export class Middleware {
 
   public isSeller() {
     return async (req: DecodedExpressRequest, res: any, next: any) => {
-      const { adminUser } = req.decoded;
-      if (!adminUser) {
+      const { isSeller } = req.decoded;
+      if (!isSeller) {
         return this.endRequest(
           403,
-          'Only admins are authorized for this route.',
+          'Only sellers are authorized for this route.',
           res,
         );
       }

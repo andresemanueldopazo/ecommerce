@@ -7,8 +7,8 @@ interface UserNameProps {
 }
 
 export class UserName extends ValueObject<UserNameProps> {
-  public static maxLength: number = 15;
-  public static minLength: number = 2;
+  public static maxLength: number = 25;
+  public static minLength: number = 5;
 
   get value(): string {
     return this.props.userName;
@@ -22,14 +22,14 @@ export class UserName extends ValueObject<UserNameProps> {
     const userNameResult = Guard.againstNullOrUndefined(
       props.userName,
       'userName',
-    );
-    if (!userNameResult.succeeded) {
-      return new AppError(userNameResult.message);
-    }
-
-    const minLengthResult = Guard.againstAtLeast(
-      this.minLength,
-      props.userName,
+      );
+      if (!userNameResult.succeeded) {
+        return new AppError(userNameResult.message);
+      }
+      
+      const minLengthResult = Guard.againstAtLeast(
+        this.minLength,
+        props.userName,
     );
     if (!minLengthResult.succeeded) {
       return new AppError(minLengthResult.message);
@@ -37,7 +37,7 @@ export class UserName extends ValueObject<UserNameProps> {
 
     const maxLengthResult = Guard.againstAtMost(this.maxLength, props.userName);
     if (!maxLengthResult.succeeded) {
-      return new AppError(minLengthResult.message);
+      return new AppError(maxLengthResult.message);
     }
 
     return new UserName(props);
